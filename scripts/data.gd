@@ -60,7 +60,7 @@ const LEADER := {"speed": 1.15, "combo": [1.0, 1.0, 1.6]}  # each hit of the cha
 
 # The circle you move the party with, and its formations.
 const CIRCLE := {"radius": 36.0, "speed": 42.0, "turn": 2.6}
-const FORMATIONS := ["ring", "line", "wedge", "column"]
+const FORMATIONS := ["base", "line", "wedge", "column"]
 
 # The rest of the party.
 const STEP_OUT := 20.0  # in formation, melee step this far out of place to hit something

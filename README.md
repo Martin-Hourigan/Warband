@@ -14,7 +14,7 @@ main menu's update button fetches new versions. Tests: `godot --headless --path 
 | Q / E | turn the formation |
 | left panel | the party's health; under it the thumbstick: moves the circle (or the one your soul is in) - for phones; the mouse drags it too |
 | right panel | formation buttons, the release button, the dodge button; under them the dial - drag its notch round to turn the formation |
-| 1-4 | formation: ring, line, wedge, column |
+| 1-4 | formation: base (four melee on the front corners of an octagon, ranged in a square in the middle), line, wedge, column |
 | F | release them (they spread out over the enemies) / back into the circle |
 | LMB on an enemy (as the circle), or G | focus: all of them go for it; on nothing: no focus |
 | Tab | your soul into the one nearest the pointer |

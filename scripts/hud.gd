@@ -235,10 +235,12 @@ func _draw_buttons() -> void:
 		var c := r.get_center().round()
 		var dot := Color(0.85, 0.85, 0.8)
 		match b:
-			"ring":
-				for k in 6:
-					draw_rect(Rect2((c + Vector2.from_angle(TAU * k / 6.0) * 7.0).round(), Vector2.ONE), dot)
-				draw_rect(Rect2(c, Vector2.ONE), dot)
+			"base":  # an arc of four across the front, a square of four in the middle
+				for k in 4:
+					var a := -PI * 0.5 + (float(k) - 1.5) * TAU / 8.0
+					draw_rect(Rect2((c + Vector2(0, 2) + Vector2.from_angle(a) * 9.0).round(), Vector2.ONE), dot)
+				for v in [Vector2(-2, 0), Vector2(2, 0), Vector2(-2, 4), Vector2(2, 4)]:
+					draw_rect(Rect2(c + v, Vector2.ONE), dot)
 			"line":
 				for k in 5:
 					draw_rect(Rect2(c + Vector2(-8 + k * 4, -3), Vector2.ONE), dot)

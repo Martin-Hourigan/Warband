@@ -86,6 +86,13 @@ and I'll assess later".
 - Paths: a straight walk only if a body-wide line is clear (no catching on
   corners); otherwise the tile path.
 
+## Base formation (Martin)
+- "the base formation have the 4 melee characters at the front in an arc like
+  1 side of a octagon, and then the ranged ones in the middle like a square".
+  Built as "base" (replaces ring): melee on the octagon's four front corners
+  (22.5/67.5 degrees either side of the front, at 0.75 of the circle), ranged
+  2x2, 12 px apart, in the middle. Extra melee go on round the octagon.
+
 ## MY CALLS (all placeholders, numbers in scripts/data.gd)
 - Party: 2 of each unit = 8.
 - Enhanced moveset of the possessed one: 15% faster, and a chain of three

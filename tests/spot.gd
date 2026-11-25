@@ -119,7 +119,7 @@ func _circle() -> void:
 	await seconds(1.5)
 	var ahead2: float = (melee.position - main.circle).dot(Vector2.from_angle(-PI * 0.5))
 	check(ahead > 0.0 and ahead2 < 0.0, "Q/E turns it: the front row swings round", "%.1f %.1f" % [ahead, ahead2])
-	main.set_formation("ring")
+	main.set_formation("base")
 
 
 ## The on-screen stick and dial (touch).
@@ -151,7 +151,7 @@ func _pads() -> void:
 	hud.touch(3, bs["release"].get_center(), true)
 	hud.touch(3, bs["release"].get_center(), false)
 	check(not main.released, "  again: back in the circle")
-	main.set_formation("ring")
+	main.set_formation("base")
 	var row: Array = hud.roster()[2]
 	hud.touch(5, row[1].get_center(), true)
 	hud.touch(5, row[1].get_center(), false)
@@ -438,7 +438,7 @@ func _controller() -> void:
 	await frames(3)
 	check(main.leader == null, "  B: back out")
 	main.scripted = true
-	main.set_formation("ring")
+	main.set_formation("base")
 
 
 ## The giant's attacks, each forced in turn, against bodies placed round it.

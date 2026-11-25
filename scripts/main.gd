@@ -34,7 +34,7 @@ var units: Array = []
 var leader = null  # the one your soul is in; none: you're the circle
 var circle := Vector2.ZERO
 var circle_rot := -PI * 0.5  # which way the formation faces
-var formation := "ring"
+var formation := "base"
 var released := false
 var focus = null  # the enemy they all go for
 var claims := {}  # enemy -> how many of the party are going for it (this frame)
@@ -283,9 +283,15 @@ func _slot_pos(u) -> Vector2:
 	var R: float = Data.CIRCLE.radius
 	var off := Vector2.ZERO
 	match formation:
-		"ring":
-			var ang := TAU * (float(i) + 0.5) / maxf(1.0, float(n))
-			off = Vector2.from_angle(ang) * (R * 0.75 if not u.ranged() else R * 0.38)
+		"base":  # melee on the front corners of an octagon, ranged in a square in the middle
+			if not u.ranged():
+				# corners at 22.5 and 67.5 degrees either side of the front; more go on round it
+				var k := float(i) - (minf(n, 4.0) - 1.0) * 0.5 if i < 4 else (float(i - 4) * 0.5 + 2.0) * (1.0 if i % 2 == 0 else -1.0)
+				off = Vector2.from_angle(k * TAU / 8.0) * R * 0.75
+			else:
+				var col := float(i % 2) - 0.5
+				var row := float(i / 2) - (ceilf(n / 2.0) - 1.0) * 0.5
+				off = Vector2(-row * 12.0, col * 12.0)
 		"line":  # one row across the front, one behind
 			off = Vector2(8.0 if not u.ranged() else -12.0, (float(i) - (n - 1) * 0.5) * 12.0)
 		"wedge":  # a point forward, opening back
