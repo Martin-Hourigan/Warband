@@ -75,6 +75,17 @@ and I'll assess later".
   lists and formation places worked out once a frame; enemies far off at
   home sleep; units off screen aren't redrawn.
 
+## Keeping to the circle (after v0.1)
+- Martin: units must try their best to stay in the circle when not
+  released; ranged got stuck in a hallway till released.
+- Bug: held ranged with an enemy in range but no shot (wall, or at the edge
+  of range) did nothing - didn't shoot, didn't go back. Now in formation the
+  place comes first: ranged shoot only within HOLD_NEAR (8 px) of their place
+  and with a shot, else walk back; melee step out at most STEP_OUT (20 px)
+  and return. Targets are picked from their place, not from where they stand.
+- Paths: a straight walk only if a body-wide line is clear (no catching on
+  corners); otherwise the tile path.
+
 ## MY CALLS (all placeholders, numbers in scripts/data.gd)
 - Party: 2 of each unit = 8.
 - Enhanced moveset of the possessed one: 15% faster, and a chain of three

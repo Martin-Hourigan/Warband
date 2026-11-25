@@ -276,6 +276,7 @@ func _think_party(it: Dictionary) -> void:
 		it.aim = _threat
 		return
 	var spot: Vector2 = main.slot_pos(self)
+	var held: bool = not main.released and (main.focus == null or main.focus.dead)
 	target = null
 	if main.focus != null and not main.focus.dead:
 		target = main.focus
@@ -291,7 +292,7 @@ func _think_party(it: Dictionary) -> void:
 		for o in main.opponents(self):
 			var d: float
 			if ranged():
-				d = position.distance_to(o.position) - float(atk.range)
+				d = spot.distance_to(o.position) - float(atk.range)
 			else:
 				d = spot.distance_to(o.position) - o.radius() - float(atk.reach) - Data.STEP_OUT
 			if d <= 0.0 and d < best:
@@ -299,8 +300,12 @@ func _think_party(it: Dictionary) -> void:
 				target = o
 	if target != null:
 		main.claims[target] = main.claims.get(target, 0) + 1
-		_fight(it, target, not main.released and main.focus == null)
-		return
+		if not held:
+			_fight(it, target, false)
+			return
+		# in formation its place comes first: it fights only from near it
+		if _fight_held(it, target, spot):
+			return
 	if position.distance_to(spot) > 2.0:
 		it.move = main.map.dir_to(position, spot)
 		if position.distance_to(spot) < 10.0:
@@ -308,6 +313,35 @@ func _think_party(it: Dictionary) -> void:
 		it.aim = position + it.move * 10.0
 	else:
 		it.aim = position + Vector2.from_angle(main.formation_angle()) * 10.0
+
+
+## Held in formation: melee steps out toward o, never more than STEP_OUT from
+## its place; ranged shoot only from their place (within HOLD_NEAR), with a
+## clear line for a bolt. Returns false if it can't fight from here: then it
+## goes back to its place.
+func _fight_held(it: Dictionary, o, spot: Vector2) -> bool:
+	var d: float = position.distance_to(o.position)
+	if atk.kind == "melee":
+		if position.distance_to(spot) > Data.STEP_OUT:
+			return false
+		it.aim = o.position
+		if d <= float(atk.reach) + o.radius() - 3.0:
+			if _cool <= 0.0:
+				it.attack = true
+			return true
+		var step: Vector2 = main.map.dir_to(position, o.position)
+		if (position + step * 4.0).distance_to(spot) > Data.STEP_OUT:
+			return false
+		it.move = step
+		return true
+	if position.distance_to(spot) > Data.HOLD_NEAR:
+		return false
+	if d > float(atk.range) or (atk.kind == "bolt" and not main.map.line_clear(position, o.position)):
+		return false
+	it.aim = o.position
+	if _cool <= 0.0:
+		it.attack = true
+	return true
 
 
 ## Go for o: melee closes in and swings; ranged keeps its distance and shoots

@@ -75,6 +75,7 @@ func _run() -> void:
 	await _circle()
 	await _pads()
 	await _auto_attack()
+	await _stay_in_circle()
 	await _release_and_focus()
 	await _possessed()
 	await _block_and_dodge()
@@ -176,6 +177,37 @@ func _pads() -> void:
 	hud.touch(8, hud.menu_buttons().start.get_center(), false)
 	check(not main.menu, "the main menu's START")
 	main.circle_rot = -PI * 0.5
+
+
+## Not released, they keep to the circle: a sorcerer left behind in the passage,
+## with an enemy in range but a wall in the way, comes back; a melee unit
+## doesn't chase past its step out.
+func _stay_in_circle() -> void:
+	await _reset()
+	var c: Vector2 = main.map.party_at
+	var e = await _enemy("knight", main.circle + Vector2(0, -40))
+	var sorc = main.party_units()[6]
+	sorc.position = (Vector2(13.5, 4.5)) * main.map.T  # along the passage out of the bonfire room
+	await seconds(4.0)
+	check(sorc.position.distance_to(main.slot_pos(sorc)) < 10.0, "a sorcerer left in the passage comes back to its place", str(sorc.position.distance_to(main.slot_pos(sorc))))
+	await _clear_enemies()
+	e = await _enemy("knight", main.circle + Vector2(0, -60))
+	var far := 0.0
+	for i in 120:
+		await physics_frame
+		for u in main.party_units():
+			if not u.ranged():
+				far = maxf(far, u.position.distance_to(main.slot_pos(u)))
+	check(far <= Data.STEP_OUT + 3.0, "melee step out to it, no further than %d from their places" % Data.STEP_OUT, "%.1f" % far)
+	main.circle += Vector2(30, 0)
+	await seconds(1.5)
+	var off := 0
+	for u in main.party_units():
+		if u.position.distance_to(main.slot_pos(u)) > 8.0 + (Data.STEP_OUT if not u.ranged() else 0.0):
+			off += 1
+			print("   behind: ", u.kind, " ", u.position.distance_to(main.slot_pos(u)), " ", u.state)
+	check(off == 0, "  the circle moves off: they go with it", "%d left behind" % off)
+	await _clear_enemies()
 
 
 func _auto_attack() -> void:

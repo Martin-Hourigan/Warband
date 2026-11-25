@@ -128,6 +128,12 @@ func line_clear(a: Vector2, b: Vector2) -> bool:
 	return true
 
 
+## Clear for a body r wide, not just a point: its middle and both edges.
+func line_clear_wide(a: Vector2, b: Vector2, r: float) -> bool:
+	var side := (b - a).normalized().orthogonal() * r
+	return line_clear(a, b) and line_clear(a + side, b + side) and line_clear(a - side, b - side)
+
+
 func new_frame() -> void:
 	_flow.clear()
 
@@ -137,7 +143,7 @@ func new_frame() -> void:
 func dir_to(a: Vector2, b: Vector2) -> Vector2:
 	if a.distance_to(b) < 1.0:
 		return Vector2.ZERO
-	if line_clear(a, b):
+	if line_clear_wide(a, b, 5.0) or (int(a.x / T) == int(b.x / T) and int(a.y / T) == int(b.y / T)):
 		return (b - a).normalized()
 	var tx := int(b.x / T)
 	var ty := int(b.y / T)

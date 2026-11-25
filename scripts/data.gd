@@ -64,6 +64,7 @@ const FORMATIONS := ["ring", "line", "wedge", "column"]
 
 # The rest of the party.
 const STEP_OUT := 20.0  # in formation, melee step this far out of place to hit something
+const HOLD_NEAR := 8.0  # in formation, ranged shoot only this close to their place
 const RELEASED_SIGHT := 170.0  # released, they go after enemies this close
 const SPREAD := 50.0  # released: a target already taken counts as this much further away
 const AI_DODGE := 0.5  # chance they dodge a wind-up aimed at them (shields block instead)
