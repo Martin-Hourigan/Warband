@@ -16,7 +16,7 @@ main menu's update button fetches new versions. Tests: `godot --headless --path 
 | right panel | formation buttons, the release button, the dodge button; under them the dial - drag its notch round to turn the formation |
 | 1-4 | formation: base (four melee on the front corners of an octagon, ranged in a square in the middle), line, wedge, column |
 | F | release them (they spread out over the enemies) / back into the circle |
-| LMB on an enemy (as the circle), or G | focus: all of them go for it; on nothing: no focus |
+| LMB on an enemy (as the circle), or G | focus: the priority target - whoever has it in range goes for it first; nobody rushes it; on nothing: no focus |
 | Tab | your soul into the one nearest the pointer |
 | X | out of it, back to the circle |
 | Space (or the dodge button) | dodge: in a body, that one; as the circle, the whole party (the way you push, or back). Pressed mid-attack, it goes when the attack's over |

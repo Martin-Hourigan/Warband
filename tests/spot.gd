@@ -268,10 +268,34 @@ func _release_and_focus() -> void:
 	main.pick_focus(b.position)
 	await seconds(0.2)
 	var on := 0
+	var could := 0
 	for u in main.party_units():
-		on += 1 if u.target == b else 0
-	check(main.focus == b and on == Data.PARTY.size(), "a focus: all of them on it", str(on))
+		if u.position.distance_to(b.position) < Data.RELEASED_SIGHT:
+			could += 1
+			on += 1 if u.target == b else 0
+	check(main.focus == b and on == could, "released, a focus: those near enough go for it first", "%d of %d" % [on, could])
 	main.released = false
+	main.focus = null
+	await _clear_enemies()
+	# in formation: those who can reach the focus from their places take it; nobody leaves
+	await _reset()
+	var near = await _enemy("knight", main.circle + Vector2(-30, -50))
+	var far = await _enemy("knight", main.circle + Vector2(40, -70))
+	await seconds(0.3)
+	main.pick_focus(far.position)
+	await seconds(0.5)
+	var on_far := 0
+	could = 0
+	var strayed := 0.0
+	for u in main.party_units():
+		var spot: Vector2 = main.slot_pos(u)
+		var reach: float = float(u.atk.range) if u.ranged() else float(u.atk.reach) + far.radius() + Data.STEP_OUT
+		if spot.distance_to(far.position) <= reach:
+			could += 1
+			on_far += 1 if u.target == far else 0
+		if not u.ranged():
+			strayed = maxf(strayed, u.position.distance_to(spot))
+	check(could > 0 and on_far == could and strayed <= Data.STEP_OUT + 3.0, "in formation, a focus: everyone who can reach it from their place takes it, nobody rushes", "%d of %d, strayed %.0f" % [on_far, could, strayed])
 	main.focus = null
 	await _clear_enemies()
 

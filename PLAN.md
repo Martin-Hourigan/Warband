@@ -93,6 +93,12 @@ and I'll assess later".
   (22.5/67.5 degrees either side of the front, at 0.75 of the circle), ranged
   2x2, 12 px apart, in the middle. Extra melee go on round the octagon.
 
+## Focus = priority target (Martin)
+- "it just makes them the priority target within range. It doesn't make them
+  all rush that target." In formation: a unit that can reach the focus from
+  its place (ranged range, melee reach + step out) takes it over anything
+  else. Released: the focus beats any other enemy within their sight (170).
+
 ## MY CALLS (all placeholders, numbers in scripts/data.gd)
 - Party: 2 of each unit = 8.
 - Enhanced moveset of the possessed one: 15% faster, and a chain of three

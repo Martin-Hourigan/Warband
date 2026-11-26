@@ -276,14 +276,16 @@ func _think_party(it: Dictionary) -> void:
 		it.aim = _threat
 		return
 	var spot: Vector2 = main.slot_pos(self)
-	var held: bool = not main.released and (main.focus == null or main.focus.dead)
+	var held: bool = not main.released
+	# the focus is only a priority: whoever has it in range goes for it first
+	var focus = main.focus if main.focus != null and not main.focus.dead else null
 	target = null
-	if main.focus != null and not main.focus.dead:
-		target = main.focus
-	elif main.released:
+	if main.released:
 		var best := Data.RELEASED_SIGHT
 		for o in main.opponents(self):
 			var score: float = position.distance_to(o.position) + Data.SPREAD * main.claims.get(o, 0)
+			if o == focus:
+				score = -1.0
 			if position.distance_to(o.position) < Data.RELEASED_SIGHT and score < best:
 				best = score
 				target = o
@@ -295,6 +297,9 @@ func _think_party(it: Dictionary) -> void:
 				d = spot.distance_to(o.position) - float(atk.range)
 			else:
 				d = spot.distance_to(o.position) - o.radius() - float(atk.reach) - Data.STEP_OUT
+			if d <= 0.0 and o == focus:
+				target = o
+				break
 			if d <= 0.0 and d < best:
 				best = d
 				target = o
