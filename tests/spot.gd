@@ -183,6 +183,30 @@ func _pads() -> void:
 ## with an enemy in range but a wall in the way, comes back; a melee unit
 ## doesn't chase past its step out.
 func _stay_in_circle() -> void:
+	# moving past an enemy: bows and sorcerers stop to shoot, then catch up
+	await _reset()
+	var mid: Vector2 = Vector2(22.5, 14.5) * main.map.T  # the room of hollows and archers
+	for u in main.party_units():
+		u.position += mid - main.circle
+	main.circle = mid
+	await seconds(1.0)
+	var k = await _enemy("knight", mid + Vector2(0, -50))
+	var kh: float = k.hp
+	var lag := 0.0
+	for i in 300:
+		main.test.move = Vector2(1 if (i / 90) % 2 == 0 else -1, 0)
+		await physics_frame
+		for u in main.party_units():
+			if u.ranged():
+				lag = maxf(lag, u.position.distance_to(main.slot_pos(u)))
+	main.test.move = Vector2.ZERO
+	await seconds(1.5)
+	var back := 0
+	for u in main.party_units():
+		if u.ranged() and u.position.distance_to(main.slot_pos(u)) < 10.0:
+			back += 1
+	check(k.hp < kh and lag < 50.0 and back == 4, "the circle moving past an enemy: ranged shoot, then catch up (one shot behind at most)", "hit %d, lag %.0f, %d back" % [kh - k.hp, lag, back])
+	await _clear_enemies()
 	await _reset()
 	var c: Vector2 = main.map.party_at
 	var e = await _enemy("knight", main.circle + Vector2(0, -40))

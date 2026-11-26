@@ -90,7 +90,7 @@ func _physics_process(delta: float) -> void:
 		_poise = 0.0
 	state_t += delta
 	var it: Dictionary = main.leader_intent() if possessed else _think()
-	if it.attack:
+	if it.attack and (possessed or state == "idle"):  # the AI doesn't line up its next attack mid-attack
 		_buffer_t = 0.3
 	if it.dodge:
 		ask_dodge(it.move)
